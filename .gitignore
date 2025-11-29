@@ -1,1 +1,5 @@
+# target binary
 calculator
+
+# object files
+*.o

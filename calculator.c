@@ -13,7 +13,8 @@ int isOperator(char *ch) {
 
 int op_geq(char *a, char *b) {
 
-    int op_a, op_b;
+    int op_a = 0;
+    int op_b = 0;
 
     if (*a == '(') {
         op_a = 0;
@@ -96,7 +97,6 @@ int main(){
                     pop_v(&v_stack, &val2);
                     pop_v(&v_stack, &val1);
                     pop_o(&o_stack, &op);
-                    printf("%f %c %f\n", val1, op, val2);
                     res = calculate(val1, val2, &op);
                     push_v(&v_stack, res);
                 }
