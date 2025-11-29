@@ -12,8 +12,11 @@ typedef struct { \
 
 // Generic stack function declarations macro
 #define DECLARE_STACK_FUNCTIONS(type, suffix) \
+stack_##suffix *stack_##suffix##_init(); \
+int is_empty_##suffix(stack_##suffix *stack); \
 void push_##suffix(stack_##suffix *stack, type val); \
-void pop_##suffix(stack_##suffix *stack, type *dst)
+type pop_##suffix(stack_##suffix *stack); \
+type peek_##suffix(stack_##suffix *stack);
 
 // Define stack types
 DEFINE_STACK_TYPE(float, v);
