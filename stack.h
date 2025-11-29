@@ -3,27 +3,17 @@
 
 #define BUFFER_SIZE 1024
 
-// Generic stack definition macro
-#define DEFINE_STACK_TYPE(type, suffix) \
-typedef struct { \
-    type array[BUFFER_SIZE]; \
-    int top; \
-} stack_##suffix
+// Unified stack using float to store both values and operators
+typedef struct {
+    float array[BUFFER_SIZE];
+    int top;
+} stack;
 
-// Generic stack function declarations macro
-#define DECLARE_STACK_FUNCTIONS(type, suffix) \
-stack_##suffix *stack_##suffix##_init(); \
-int is_empty_##suffix(stack_##suffix *stack); \
-void push_##suffix(stack_##suffix *stack, type val); \
-type pop_##suffix(stack_##suffix *stack); \
-type peek_##suffix(stack_##suffix *stack);
-
-// Define stack types
-DEFINE_STACK_TYPE(float, v);
-DEFINE_STACK_TYPE(char, o);
-
-// Declare stack functions
-DECLARE_STACK_FUNCTIONS(float, v);
-DECLARE_STACK_FUNCTIONS(char, o);
+// Stack function declarations
+stack *stack_init();
+int is_empty(stack *s);
+void push(stack *s, float val);
+float pop(stack *s);
+float peek(stack *s);
 
 #endif
