@@ -3,22 +3,24 @@
 
 #define BUFFER_SIZE 1024
 
-typedef struct {
-    float array[BUFFER_SIZE];
-    int top;
-} v_stack;
+// Generic stack definition macro
+#define DEFINE_STACK_TYPE(type, suffix) \
+typedef struct { \
+    type array[BUFFER_SIZE]; \
+    int top; \
+} stack_##suffix
 
-typedef struct {
-    char array[BUFFER_SIZE];
-    int top;
-} o_stack;
+// Generic stack function declarations macro
+#define DECLARE_STACK_FUNCTIONS(type, suffix) \
+void push_##suffix(stack_##suffix *stack, type val); \
+void pop_##suffix(stack_##suffix *stack, type *dst)
 
-void push_v(v_stack *stack, float val);
+// Define stack types
+DEFINE_STACK_TYPE(float, v);
+DEFINE_STACK_TYPE(char, o);
 
-void pop_v(v_stack *stack, float *dst);
-
-void push_o(o_stack *stack, char val);
-
-void pop_o(o_stack *stack, char *dst);
+// Declare stack functions
+DECLARE_STACK_FUNCTIONS(float, v);
+DECLARE_STACK_FUNCTIONS(char, o);
 
 #endif

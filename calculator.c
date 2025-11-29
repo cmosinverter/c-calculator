@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "stack.h"
 
-int isOperator(char *ch) {
+int is_operator(char *ch) {
     if (*ch == '+' || *ch == '-' || *ch == '*' || *ch == '/') {
         return 1;
     } else {
@@ -56,8 +56,8 @@ int main(){
     fgets(input, BUFFER_SIZE, stdin);
     input[strcspn(input, "\n")] = '\0';
 
-    o_stack o_stack = {0};
-    v_stack v_stack = {0};
+    stack_o stack_o = {0};
+    stack_v stack_v = {0};
 
     float val1, val2;
     int res;
@@ -75,51 +75,50 @@ int main(){
         } else {
 
             if (c_num_index > 0) {
-                push_v(&v_stack, strtof(c_num, NULL));
+                push_v(&stack_v, strtof(c_num, NULL));
                 c_num_index = 0;
                 c_num[0] = '\0';
             }
 
             if (input[i] == '(') {
-                push_o(&o_stack, input[i]);
-            } else if (isOperator(input+i)) {
-                while (o_stack.top > 0 && op_geq(&o_stack.array[o_stack.top-1], input+i)) {
-                    pop_v(&v_stack, &val2);
-                    pop_v(&v_stack, &val1);
-                    pop_o(&o_stack, &op);
-                    printf("%f %c %f\n", val1, op, val2);
+                push_o(&stack_o, input[i]);
+            } else if (is_operator(input+i)) {
+                while (stack_o.top > 0 && op_geq(&stack_o.array[stack_o.top-1], input+i)) {
+                    pop_v(&stack_v, &val2);
+                    pop_v(&stack_v, &val1);
+                    pop_o(&stack_o, &op);
                     res = calculate(val1, val2, &op);
-                    push_v(&v_stack, res);
+                    push_v(&stack_v, res);
                 }
-                push_o(&o_stack, input[i]);
+                push_o(&stack_o, input[i]);
             } else if (input[i] == ')') {
-                while (o_stack.array[o_stack.top - 1] != '(') {
-                    pop_v(&v_stack, &val2);
-                    pop_v(&v_stack, &val1);
-                    pop_o(&o_stack, &op);
+                while (stack_o.array[stack_o.top - 1] != '(') {
+                    pop_v(&stack_v, &val2);
+                    pop_v(&stack_v, &val1);
+                    pop_o(&stack_o, &op);
                     res = calculate(val1, val2, &op);
-                    push_v(&v_stack, res);
+                    push_v(&stack_v, res);
                 }
-                pop_o(&o_stack, &op);
+                pop_o(&stack_o, &op);
             }
         }
     }
 
     if (c_num_index > 0) {
-        push_v(&v_stack, strtof(c_num, NULL));
+        push_v(&stack_v, strtof(c_num, NULL));
         c_num_index = 0;
         c_num[0] = '\0';
     }
 
-    while (o_stack.top > 0) {
-        pop_v(&v_stack, &val2);
-        pop_v(&v_stack, &val1);
-        pop_o(&o_stack, &op);
+    while (stack_o.top > 0) {
+        pop_v(&stack_v, &val2);
+        pop_v(&stack_v, &val1);
+        pop_o(&stack_o, &op);
         res = calculate(val1, val2, &op);
-        push_v(&v_stack, res);
+        push_v(&stack_v, res);
     }
 
-    printf("%f\n", v_stack.array[0]);
+    printf("%f\n", stack_v.array[0]);
 
     free(input);
     free(c_num);

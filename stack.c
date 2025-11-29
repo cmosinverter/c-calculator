@@ -1,17 +1,15 @@
 #include "stack.h"
 
-void push_v(v_stack *stack, float val) {
-    stack->array[(stack->top)++] = val;
+// Generic stack function implementations macro
+#define IMPLEMENT_STACK_FUNCTIONS(type, suffix) \
+void push_##suffix(stack_##suffix *stack, type val) { \
+    stack->array[(stack->top)++] = val; \
+} \
+\
+void pop_##suffix(stack_##suffix *stack, type *dst) { \
+    *dst = stack->array[--(stack->top)]; \
 }
 
-void pop_v(v_stack *stack, float *dst) {
-    *dst = stack->array[--(stack->top)];
-}
-
-void push_o(o_stack *stack, char val) {
-    stack->array[(stack->top)++] = val;
-}
-
-void pop_o(o_stack *stack, char *dst) {
-    *dst = stack->array[--(stack->top)];
-}
+// Implement stack functions for different types
+IMPLEMENT_STACK_FUNCTIONS(float, v)
+IMPLEMENT_STACK_FUNCTIONS(char, o)
