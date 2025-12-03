@@ -57,8 +57,11 @@ int main(){
     int c_num_index = 0;
 
     for(int i = 0; i < strlen(input); i++) {
-        if (input[i] >= 48 && input[i] <= 57) {
-            c_num[c_num_index] = input[i];
+
+        char curr = input[i];
+
+        if (curr >= 48 && curr <= 57) {
+            c_num[c_num_index] = curr;
             c_num[++c_num_index] = '\0';
 
         } else {
@@ -69,18 +72,18 @@ int main(){
                 c_num[0] = '\0';
             }
 
-            if (input[i] == '(') {
-                push(operator_stack, (float)input[i]);
-            } else if (is_operator(input[i])) {
-                while (!is_empty(operator_stack) && priority_greater_or_equal((char)peek(operator_stack), input[i])) {
+            if (curr == '(') {
+                push(operator_stack, (float)curr);
+            } else if (is_operator(curr)) {
+                while (!is_empty(operator_stack) && priority_greater_or_equal((char)peek(operator_stack), curr)) {
                     val2 = pop(value_stack);
                     val1 = pop(value_stack);
                     op = (char)pop(operator_stack);
                     res = calculate(val1, val2, op);
                     push(value_stack, res);
                 }
-                push(operator_stack, (float)input[i]);
-            } else if (input[i] == ')') {
+                push(operator_stack, (float)curr);
+            } else if (curr == ')') {
                 while ((char)peek(operator_stack) != '(') {
                     val2 = pop(value_stack);
                     val1 = pop(value_stack);
