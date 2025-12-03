@@ -3,48 +3,34 @@
 #include <stdlib.h>
 #include "stack.h"
 
-int is_operator(char *ch) {
-    if (*ch == '+' || *ch == '-' || *ch == '*' || *ch == '/') {
+int is_operator(char ch) {
+    if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
         return 1;
     } else {
         return 0;
     }
 }
 
-int priority_greater_or_equal(char a, char b) {
-
-    int op_a = 0;
-    int op_b = 0;
-
-    if (a == '(') {
-        op_a = 0;
-    } else if (a == '+' || a == '-') {
-        op_a = 1;
-    } else if (a == '*' || a == '/') {
-        op_a = 2;
-    }
-
-    if (b == '(') {
-        op_b = 0;
-    } else if (b == '+' || b == '-') {
-        op_b = 1;
-    } else if (b == '*' || b == '/') {
-        op_b = 2;
-    }
-
-    return op_a >= op_b;
+int get_priority(char op) {
+    if (op == '*' || op == '/') return 2;
+    if (op == '+' || op == '-') return 1;
+    return 0;  // '(' or any other character
 }
 
-float calculate(float val1, float val2, char *op) {
+int priority_greater_or_equal(char a, char b) {
+    return get_priority(a) >= get_priority(b);
+}
+
+float calculate(float val1, float val2, char op) {
 
     float res = 0;
-    if (*op == '+') {
+    if (op == '+') {
         res = val1 + val2;
-    } else if (*op == '-') {
+    } else if (op == '-') {
         res = val1 - val2;
-    } else if (*op == '*') {
+    } else if (op == '*') {
         res = val1 * val2;
-    } else if (*op == '/') {
+    } else if (op == '/') {
         res = val1 / val2;
     }
     return res;
@@ -53,7 +39,10 @@ float calculate(float val1, float val2, char *op) {
 int main(){
 
     char *input = malloc(sizeof(char) * BUFFER_SIZE);
-    fgets(input, BUFFER_SIZE, stdin);
+    if (fgets(input, BUFFER_SIZE, stdin) == NULL) {
+        fprintf(stderr, "Error reading input\n");
+        return 1;
+    }
     input[strcspn(input, "\n")] = '\0';
 
     stack *value_stack = stack_init();
@@ -82,12 +71,12 @@ int main(){
 
             if (input[i] == '(') {
                 push(operator_stack, (float)input[i]);
-            } else if (is_operator(input+i)) {
+            } else if (is_operator(input[i])) {
                 while (!is_empty(operator_stack) && priority_greater_or_equal((char)peek(operator_stack), input[i])) {
                     val2 = pop(value_stack);
                     val1 = pop(value_stack);
                     op = (char)pop(operator_stack);
-                    res = calculate(val1, val2, &op);
+                    res = calculate(val1, val2, op);
                     push(value_stack, res);
                 }
                 push(operator_stack, (float)input[i]);
@@ -96,7 +85,7 @@ int main(){
                     val2 = pop(value_stack);
                     val1 = pop(value_stack);
                     op = (char)pop(operator_stack);
-                    res = calculate(val1, val2, &op);
+                    res = calculate(val1, val2, op);
                     push(value_stack, res);
                 }
                 op = (char)pop(operator_stack);
@@ -114,7 +103,7 @@ int main(){
         val2 = pop(value_stack);
         val1 = pop(value_stack);
         op = (char)pop(operator_stack);
-        res = calculate(val1, val2, &op);
+        res = calculate(val1, val2, op);
         push(value_stack, res);
     }
 
