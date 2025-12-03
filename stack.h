@@ -12,6 +12,7 @@ typedef struct {
 // Stack function declarations
 stack *stack_init();
 int is_empty(stack *s);
+int is_full(stack *s);
 void push(stack *s, float val);
 float pop(stack *s);
 float peek(stack *s);

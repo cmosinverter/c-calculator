@@ -36,6 +36,14 @@ float calculate(float val1, float val2, char op) {
     return res;
 }
 
+void apply_operator(stack *value_stack, stack *operator_stack) {
+    float val2 = pop(value_stack);
+    float val1 = pop(value_stack);
+    char op = (char)pop(operator_stack);
+    float res = calculate(val1, val2, op);
+    push(value_stack, res);
+}
+
 int main(){
 
     char *input = malloc(sizeof(char) * BUFFER_SIZE);
@@ -47,10 +55,6 @@ int main(){
 
     stack *value_stack = stack_init();
     stack *operator_stack = stack_init();
-
-    float val1, val2;
-    float res;
-    char op;
 
     char *c_num = malloc(sizeof(char) * BUFFER_SIZE);
     c_num[0] = '\0';
@@ -76,22 +80,14 @@ int main(){
                 push(operator_stack, (float)curr);
             } else if (is_operator(curr)) {
                 while (!is_empty(operator_stack) && priority_greater_or_equal((char)peek(operator_stack), curr)) {
-                    val2 = pop(value_stack);
-                    val1 = pop(value_stack);
-                    op = (char)pop(operator_stack);
-                    res = calculate(val1, val2, op);
-                    push(value_stack, res);
+                    apply_operator(value_stack, operator_stack);
                 }
                 push(operator_stack, (float)curr);
             } else if (curr == ')') {
                 while ((char)peek(operator_stack) != '(') {
-                    val2 = pop(value_stack);
-                    val1 = pop(value_stack);
-                    op = (char)pop(operator_stack);
-                    res = calculate(val1, val2, op);
-                    push(value_stack, res);
+                    apply_operator(value_stack, operator_stack);
                 }
-                op = (char)pop(operator_stack);
+                pop(operator_stack); // Remove the '('
             }
         }
     }
@@ -103,11 +99,7 @@ int main(){
     }
 
     while (!is_empty(operator_stack)) {
-        val2 = pop(value_stack);
-        val1 = pop(value_stack);
-        op = (char)pop(operator_stack);
-        res = calculate(val1, val2, op);
-        push(value_stack, res);
+        apply_operator(value_stack, operator_stack);
     }
 
     printf("%f\n", peek(value_stack));
